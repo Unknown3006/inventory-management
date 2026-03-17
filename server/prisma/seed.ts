@@ -37,7 +37,21 @@ async function main() {
     "expenseByCategory.json",
   ];
 
-  await deleteAllData(orderedFileNames);
+  // For deletion, we need to respect foreign key constraints.
+  // Delete dependents first, then parents (Products, ExpenseSummary).
+  const deleteOrderNames = [
+    "sales.json",
+    "purchases.json",
+    "expenseByCategory.json",
+    "salesSummary.json",
+    "purchaseSummary.json",
+    "expenses.json",
+    "users.json",
+    "products.json",
+    "expenseSummary.json",
+  ];
+
+  await deleteAllData(deleteOrderNames);
 
   for (const fileName of orderedFileNames) {
     const filePath = path.join(dataDirectory, fileName);
