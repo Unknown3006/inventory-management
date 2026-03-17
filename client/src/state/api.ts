@@ -15,6 +15,13 @@ export interface NewProduct {
   stockQuantity: number;
 }
 
+export interface UpdateProduct {
+  name?: string;
+  price?: number;
+  rating?: number;
+  stockQuantity?: number;
+}
+
 export interface SalesSummary {
   salesSummaryId: string;
   totalValue: number;
@@ -80,6 +87,21 @@ export const api = createApi({
       }),
       invalidatesTags: ["Products"],
     }),
+    updateProduct: build.mutation<Product, { productId: string; data: UpdateProduct }>({
+      query: ({ productId, data }) => ({
+        url: `/products/${productId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: build.mutation<void, string>({
+      query: (productId) => ({
+        url: `/products/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
     getUsers: build.query<User[], void>({
       query: () => "/users",
       providesTags: ["Users"],
@@ -95,6 +117,8 @@ export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetUsersQuery,
   useGetExpensesByCategoryQuery,
 } = api;

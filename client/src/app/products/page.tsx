@@ -1,9 +1,9 @@
 "use client";
 
-import { useGetProductsQuery, useCreateProductMutation } from "@/state/api";
+import { useGetProductsQuery, useCreateProductMutation, useUpdateProductMutation, useDeleteProductMutation } from "@/state/api";
 import Header from "@/app/(components)/Header";
 import { useState, useEffect } from "react";
-import { Plus, AlertTriangle, Star } from "lucide-react";
+import { Plus, AlertTriangle, Star, Edit, Trash2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 interface FormData {
@@ -21,9 +21,14 @@ interface FormErrors {
 const Products = () => {
   const { data: products, isError, isLoading, refetch } = useGetProductsQuery();
   const [createProduct] = useCreateProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     productId: "",
     name: "",
@@ -59,20 +64,61 @@ const Products = () => {
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      await createProduct({
-        name: formData.name,
-        price: parseFloat(formData.price),
-        rating: formData.rating ? parseFloat(formData.rating) : undefined,
-        stockQuantity: parseInt(formData.stockQuantity),
-      }).unwrap();
+      if (isEditMode && editingProductId) {
+        // Update product
+        await updateProduct({
+          productId: editingProductId,
+          data: {
+            name: formData.name,
+            price: parseFloat(formData.price),
+            rating: formData.rating ? parseFloat(formData.rating) : undefined,
+            stockQuantity: parseInt(formData.stockQuantity),
+          },
+        }).unwrap();
+        setFormErrors({ submit: "" });
+      } else {
+        // Create product
+        await createProduct({
+          name: formData.name,
+          price: parseFloat(formData.price),
+          rating: formData.rating ? parseFloat(formData.rating) : undefined,
+          stockQuantity: parseInt(formData.stockQuantity),
+        }).unwrap();
+      }
       setFormData({ productId: "", name: "", price: "", rating: "", stockQuantity: "" });
       setFormErrors({});
       setIsModalOpen(false);
+      setIsEditMode(false);
+      setEditingProductId(null);
       refetch();
     } catch (error) {
-      setFormErrors({ submit: "Failed to create product. Please try again." });
+      setFormErrors({ submit: isEditMode ? "Failed to update product. Please try again." : "Failed to create product. Please try again." });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleEditProduct = (product: any) => {
+    setEditingProductId(product.productId);
+    setFormData({
+      productId: product.productId,
+      name: product.name,
+      price: product.price.toString(),
+      rating: product.rating?.toString() || "",
+      stockQuantity: product.stockQuantity.toString(),
+    });
+    setIsEditMode(true);
+    setIsModalOpen(true);
+    setFormErrors({});
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      await deleteProduct(productId).unwrap();
+      setDeleteConfirm(null);
+      refetch();
+    } catch (error) {
+      alert("Failed to delete product");
     }
   };
 
@@ -86,6 +132,8 @@ const Products = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsEditMode(false);
+    setEditingProductId(null);
     setFormData({ productId: "", name: "", price: "", rating: "", stockQuantity: "" });
     setFormErrors({});
   };
@@ -163,7 +211,7 @@ const Products = () => {
             return (
               <div
                 key={product.productId}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-200"
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 flex flex-col"
               >
                 {/* Product Image */}
                 <div className="relative h-48 bg-gray-200 overflow-hidden flex items-center justify-center">
@@ -181,7 +229,7 @@ const Products = () => {
                 </div>
 
                 {/* Card Content */}
-                <div className="p-4 flex flex-col h-full">
+                <div className="p-4 flex flex-col flex-1">
                   {/* Product Name */}
                   <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
                     {product.name}
@@ -212,10 +260,28 @@ const Products = () => {
                   </div>
 
                   {/* Product ID Badge */}
-                  <div className="mt-auto">
+                  <div className="mb-4">
                     <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
                       ID: {product.productId}
                     </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mt-auto pt-2">
+                    <button
+                      onClick={() => handleEditProduct(product)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition text-sm font-medium"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(product.productId)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition text-sm font-medium"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
@@ -227,7 +293,7 @@ const Products = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
             <div className="flex justify-between items-center px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold">Add New Product</h2>
+              <h2 className="text-xl font-semibold">{isEditMode ? "Edit Product" : "Add New Product"}</h2>
               <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">X</button>
             </div>
             <form onSubmit={handleAddProduct} className="p-6 space-y-4">
@@ -254,9 +320,37 @@ const Products = () => {
               </div>
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={closeModal} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Cancel</button>
-                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50">{isSubmitting ? "Adding..." : "Add Product"}</button>
+                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50">{isSubmitting ? (isEditMode ? "Updating..." : "Adding...") : (isEditMode ? "Update Product" : "Add Product")}</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-3">Delete Product?</h2>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this product? This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteConfirm && handleDeleteProduct(deleteConfirm)}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

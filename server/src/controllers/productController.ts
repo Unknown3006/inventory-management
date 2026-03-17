@@ -57,3 +57,81 @@ export const createProduct = async (
     res.status(500).json({ message: "Error creating product" });
   }
 };
+
+export const updateProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { productId } = req.params;
+    const { name, price, rating, stockQuantity } = req.body;
+
+    // Validate productId
+    if (!productId) {
+      res.status(400).json({ message: "Product ID is required" });
+      return;
+    }
+
+    // Check if product exists
+    const existingProduct = await prisma.products.findUnique({
+      where: { productId },
+    });
+
+    if (!existingProduct) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    // Update only provided fields
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (price !== undefined) updateData.price = parseFloat(price);
+    if (rating !== undefined) updateData.rating = rating ? parseFloat(rating) : undefined;
+    if (stockQuantity !== undefined) updateData.stockQuantity = parseInt(stockQuantity);
+
+    const updatedProduct = await prisma.products.update({
+      where: { productId },
+      data: updateData,
+    });
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ message: "Error updating product" });
+  }
+};
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { productId } = req.params;
+
+    // Validate productId
+    if (!productId) {
+      res.status(400).json({ message: "Product ID is required" });
+      return;
+    }
+
+    // Check if product exists
+    const existingProduct = await prisma.products.findUnique({
+      where: { productId },
+    });
+
+    if (!existingProduct) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    // Delete the product
+    await prisma.products.delete({
+      where: { productId },
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ message: "Error deleting product" });
+  }
+};
