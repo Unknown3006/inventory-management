@@ -94,9 +94,9 @@ const Inventory = () => {
     <div className="flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <Header name="Inventory" />
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-yellow-600" />
-          <span className="text-sm font-medium text-yellow-800">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg px-4 py-2 flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+          <span className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
             {lowStockCount} items low on stock
           </span>
         </div>
@@ -109,7 +109,7 @@ const Inventory = () => {
           placeholder="Search by product name or ID..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
         />
       </div>
 
@@ -128,7 +128,7 @@ const Inventory = () => {
             printOptions: { hideFooter: true, hideToolbar: true },
           },
         }}
-        className="bg-white shadow rounded-lg border border-gray-200 !text-gray-700"
+        className="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 !text-gray-700 dark:!text-gray-200"
         sx={{
           "& .MuiDataGrid-cell": {
             fontSize: "0.875rem",

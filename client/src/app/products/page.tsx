@@ -139,7 +139,7 @@ const Products = () => {
   };
 
   const renderStars = (rating: number | undefined) => {
-    if (!rating) return <span className="text-gray-400 text-sm">No rating</span>;
+    if (!rating) return <span className="text-gray-400 dark:text-gray-500 text-sm">No rating</span>;
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
@@ -173,13 +173,13 @@ const Products = () => {
     return (
       <div className="flex items-center gap-2">
         <div className="flex gap-0.5">{stars}</div>
-        <span className="text-sm text-gray-600">({rating.toFixed(1)})</span>
+        <span className="text-sm text-gray-600 dark:text-gray-400">({rating.toFixed(1)})</span>
       </div>
     );
   };
 
-  if (isLoading) return <div className="py-8 text-center text-gray-500">Loading products...</div>;
-  if (isError || !products) return <div className="text-center text-red-500 py-8">Failed to fetch products</div>;
+  if (isLoading) return <div className="py-8 text-center text-gray-500 dark:text-gray-400">Loading products...</div>;
+  if (isError || !products) return <div className="text-center text-red-500 dark:text-red-400 py-8">Failed to fetch products</div>;
 
   return (
     <div className="flex flex-col">
@@ -191,16 +191,16 @@ const Products = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1">
-          <input type="text" placeholder="Search products by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
+          <input type="text" placeholder="Search products by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:border-blue-500 transition-colors" />
         </div>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 flex items-center gap-2 whitespace-nowrap">
-          <AlertTriangle className="w-4 h-4 text-yellow-600" />
-          <span className="text-sm font-medium text-yellow-800">{lowStockCount} low stock</span>
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg px-4 py-2 flex items-center gap-2 whitespace-nowrap">
+          <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+          <span className="text-sm font-medium text-yellow-800 dark:text-yellow-300">{lowStockCount} low stock</span>
         </div>
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           <p className="text-lg">No products found</p>
           <p className="text-sm">Try adjusting your search or add a new product</p>
         </div>
@@ -211,10 +211,10 @@ const Products = () => {
             return (
               <div
                 key={product.productId}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 flex flex-col"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700 flex flex-col"
               >
                 {/* Product Image */}
-                <div className="relative h-48 bg-gray-200 overflow-hidden flex items-center justify-center">
+                <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden flex items-center justify-center">
                   <img
                     src={`https://via.placeholder.com/300x200?text=${encodeURIComponent(product.name)}`}
                     alt={product.name}
@@ -231,7 +231,7 @@ const Products = () => {
                 {/* Card Content */}
                 <div className="p-4 flex flex-col flex-1">
                   {/* Product Name */}
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
                     {product.name}
                   </h3>
 
@@ -242,14 +242,14 @@ const Products = () => {
 
                   {/* Price */}
                   <div className="mb-3">
-                    <p className="text-2xl font-bold text-blue-600">
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                       ${product.price.toFixed(2)}
                     </p>
                   </div>
 
                   {/* Stock Quantity */}
                   <div className="mb-4 flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Stock:</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Stock:</span>
                     <span
                       className={`text-sm font-semibold ${
                         isLowStock ? "text-red-600" : "text-green-600"
@@ -261,7 +261,7 @@ const Products = () => {
 
                   {/* Product ID Badge */}
                   <div className="mb-4">
-                    <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+                    <span className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 rounded">
                       ID: {product.productId}
                     </span>
                   </div>
@@ -291,35 +291,35 @@ const Products = () => {
       )}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
-            <div className="flex justify-between items-center px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold">{isEditMode ? "Edit Product" : "Add New Product"}</h2>
-              <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">X</button>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-semibold dark:text-gray-100">{isEditMode ? "Edit Product" : "Add New Product"}</h2>
+              <button onClick={closeModal} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">X</button>
             </div>
             <form onSubmit={handleAddProduct} className="p-6 space-y-4">
               {formErrors.submit && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{formErrors.submit}</div>}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${formErrors.name ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`} placeholder="Product name" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name *</label>
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-gray-100 ${formErrors.name ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"}`} placeholder="Product name" />
                 {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price ($) *</label>
-                <input type="number" name="price" value={formData.price} onChange={handleInputChange} step="0.01" min="0" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${formErrors.price ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`} placeholder="0.00" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price ($) *</label>
+                <input type="number" name="price" value={formData.price} onChange={handleInputChange} step="0.01" min="0" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-gray-100 ${formErrors.price ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"}`} placeholder="0.00" />
                 {formErrors.price && <p className="text-red-500 text-xs mt-1">{formErrors.price}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Rating (0-5)</label>
-                <input type="number" name="rating" value={formData.rating} onChange={handleInputChange} step="0.1" min="0" max="5" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${formErrors.rating ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`} placeholder="0.0" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rating (0-5)</label>
+                <input type="number" name="rating" value={formData.rating} onChange={handleInputChange} step="0.1" min="0" max="5" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-gray-100 ${formErrors.rating ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"}`} placeholder="0.0" />
                 {formErrors.rating && <p className="text-red-500 text-xs mt-1">{formErrors.rating}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity *</label>
-                <input type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} min="0" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${formErrors.stockQuantity ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`} placeholder="0" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock Quantity *</label>
+                <input type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} min="0" className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-gray-100 ${formErrors.stockQuantity ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"}`} placeholder="0" />
                 {formErrors.stockQuantity && <p className="text-red-500 text-xs mt-1">{formErrors.stockQuantity}</p>}
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={closeModal} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+                <button type="button" onClick={closeModal} className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">Cancel</button>
                 <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50">{isSubmitting ? (isEditMode ? "Updating..." : "Adding...") : (isEditMode ? "Update Product" : "Add Product")}</button>
               </div>
             </form>
@@ -330,16 +330,16 @@ const Products = () => {
       {/* DELETE CONFIRMATION MODAL */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full">
             <div className="p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">Delete Product?</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Delete Product?</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Are you sure you want to delete this product? This action cannot be undone.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                 >
                   Cancel
                 </button>

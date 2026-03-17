@@ -8,12 +8,12 @@ const CardPopularProducts = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
 
   return (
-    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-16">
+    <div className="row-span-3 xl:row-span-6 bg-white dark:bg-gray-800 shadow-md rounded-2xl pb-16 transition-colors">
       {isLoading ? (
         <div className="m-5">Loading...</div>
       ) : (
         <>
-          <h3 className="text-lg font-semibold px-7 pt-5 pb-2">
+          <h3 className="text-lg font-semibold px-7 pt-5 pb-2 dark:text-gray-100">
             Popular Products
           </h3>
           <hr />
@@ -21,7 +21,7 @@ const CardPopularProducts = () => {
             {dashboardMetrics?.popularProducts.map((product) => (
               <div
                 key={product.productId}
-                className="flex items-center justify-between gap-3 px-5 py-7 border-b"
+                className="flex items-center justify-between gap-3 px-5 py-7 border-b border-gray-100 dark:border-gray-700"
               >
                 <div className="flex items-center gap-3">
                   <Image
@@ -34,7 +34,7 @@ const CardPopularProducts = () => {
                     className="rounded-lg w-14 h-14"
                   />
                   <div className="flex flex-col justify-between gap-1">
-                    <div className="font-bold text-gray-700">
+                    <div className="font-bold text-gray-700 dark:text-gray-200">
                       {product.name}
                     </div>
                     <div className="flex text-sm items-center">
@@ -48,7 +48,7 @@ const CardPopularProducts = () => {
                 </div>
 
                 <div className="text-xs flex items-center">
-                  <button className="p-2 rounded-full bg-blue-100 text-blue-600 mr-2">
+                  <button className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 mr-2">
                     <ShoppingBag className="w-4 h-4" />
                   </button>
                   {Math.round(product.stockQuantity / 1000)}k Sold

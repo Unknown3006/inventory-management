@@ -1,37 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Header from "@/app/(components)/Header";
+import { useAppDispatch, useAppSelector } from "@/app/redux";
+import { setIsDarkMode, setIsNotificationsEnabled } from "@/state";
 
 type UserSetting = {
   label: string;
   value: string | boolean;
   type: "text" | "toggle";
+  key?: string;
 };
 
-const mockSettings: UserSetting[] = [
-  { label: "Username", value: "john_doe", type: "text" },
-  { label: "Email", value: "john.doe@example.com", type: "text" },
-  { label: "Notification", value: true, type: "toggle" },
-  { label: "Dark Mode", value: false, type: "toggle" },
-  { label: "Language", value: "English", type: "text" },
-];
-
 const Settings = () => {
-  const [userSettings, setUserSettings] = useState<UserSetting[]>(mockSettings);
+  const dispatch = useAppDispatch();
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  const isNotificationsEnabled = useAppSelector((state) => state.global.isNotificationsEnabled);
 
-  const handleToggleChange = (index: number) => {
-    const settingsCopy = [...userSettings];
-    settingsCopy[index].value = !settingsCopy[index].value as boolean;
-    setUserSettings(settingsCopy);
+  const userSettings: UserSetting[] = [
+    { label: "Username", value: "john_doe", type: "text" },
+    { label: "Email", value: "john.doe@example.com", type: "text" },
+    { label: "Notification", value: isNotificationsEnabled, type: "toggle", key: "notification" },
+    { label: "Dark Mode", value: isDarkMode, type: "toggle", key: "darkMode" },
+    { label: "Language", value: "English", type: "text" },
+  ];
+
+  const handleToggleChange = (setting: UserSetting) => {
+    if (setting.key === "darkMode") {
+      dispatch(setIsDarkMode(!isDarkMode));
+    } else if (setting.key === "notification") {
+      dispatch(setIsNotificationsEnabled(!isNotificationsEnabled));
+    }
   };
 
   return (
     <div className="w-full">
       <Header name="User Settings" />
-      <div className="overflow-x-auto mt-5 shadow-md">
-        <table className="min-w-full bg-white rounded-lg">
-          <thead className="bg-gray-800 text-white">
+      <div className="overflow-x-auto mt-5 shadow-md rounded-lg">
+        <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg transition-colors">
+          <thead className="bg-gray-800 dark:bg-gray-700 text-white">
             <tr>
               <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
                 Setting
@@ -42,9 +49,9 @@ const Settings = () => {
             </tr>
           </thead>
           <tbody>
-            {userSettings.map((setting, index) => (
-              <tr className="hover:bg-blue-50" key={setting.label}>
-                <td className="py-2 px-4">{setting.label}</td>
+            {userSettings.map((setting) => (
+              <tr className="hover:bg-blue-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 transition-colors" key={setting.label}>
+                <td className="py-2 px-4 text-gray-800 dark:text-gray-200">{setting.label}</td>
                 <td className="py-2 px-4">
                   {setting.type === "toggle" ? (
                     <label className="inline-flex relative items-center cursor-pointer">
@@ -52,10 +59,10 @@ const Settings = () => {
                         type="checkbox"
                         className="sr-only peer"
                         checked={setting.value as boolean}
-                        onChange={() => handleToggleChange(index)}
+                        onChange={() => handleToggleChange(setting)}
                       />
                       <div
-                        className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-blue-400 peer-focus:ring-4 
+                        className="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full peer peer-focus:ring-blue-400 peer-focus:ring-4 
                         transition peer-checked:after:translate-x-full peer-checked:after:border-white 
                         after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white 
                         after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all
@@ -65,13 +72,8 @@ const Settings = () => {
                   ) : (
                     <input
                       type="text"
-                      className="px-4 py-2 border rounded-lg text-gray-500 focus:outline-none focus:border-blue-500"
-                      value={setting.value as string}
-                      onChange={(e) => {
-                        const settingsCopy = [...userSettings];
-                        settingsCopy[index].value = e.target.value;
-                        setUserSettings(settingsCopy);
-                      }}
+                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-300 bg-white dark:bg-gray-700 focus:outline-none focus:border-blue-500 transition-colors"
+                      defaultValue={setting.value as string}
                     />
                   )}
                 </td>

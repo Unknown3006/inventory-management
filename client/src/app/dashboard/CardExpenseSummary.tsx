@@ -44,14 +44,14 @@ const CardExpenseSummary = () => {
   const formattedTotalExpenses = totalExpenses.toFixed(2);
 
   return (
-    <div className="row-span-3 bg-white shadow-md rounded-2xl flex flex-col justify-between">
+    <div className="row-span-3 bg-white dark:bg-gray-800 shadow-md rounded-2xl flex flex-col justify-between transition-colors">
       {isLoading ? (
         <div className="m-5">Loading...</div>
       ) : (
         <>
           {/* HEADER */}
           <div>
-            <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
+            <h2 className="text-lg font-semibold mb-2 px-7 pt-5 dark:text-gray-100">
               Expense Summary
             </h2>
             <hr />
@@ -82,7 +82,7 @@ const CardExpenseSummary = () => {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center basis-2/5">
-                <span className="font-bold text-xl">
+                <span className="font-bold text-xl dark:text-gray-100">
                   ${formattedTotalExpenses}
                 </span>
               </div>

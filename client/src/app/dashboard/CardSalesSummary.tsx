@@ -42,14 +42,14 @@ const CardSalesSummary = () => {
   }
 
   return (
-    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl flex flex-col justify-between">
+    <div className="row-span-3 xl:row-span-6 bg-white dark:bg-gray-800 shadow-md rounded-2xl flex flex-col justify-between transition-colors">
       {isLoading ? (
         <div className="m-5">Loading...</div>
       ) : (
         <>
           {/* HEADER */}
           <div>
-            <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
+            <h2 className="text-lg font-semibold mb-2 px-7 pt-5 dark:text-gray-100">
               Sales Summary
             </h2>
             <hr />
@@ -60,7 +60,7 @@ const CardSalesSummary = () => {
             {/* BODY HEADER */}
             <div className="flex justify-between items-center mb-6 px-7 mt-5">
               <div className="text-lg font-medium">
-                <p className="text-xs text-gray-400">Value</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Value</p>
                 <span className="text-2xl font-extrabold">
                   $
                   {(totalValueSum / 1000000).toLocaleString("en", {
@@ -73,8 +73,8 @@ const CardSalesSummary = () => {
                   {averageChangePercentage.toFixed(2)}%
                 </span>
               </div>
-              <select
-                className="shadow-sm border border-gray-300 bg-white p-2 rounded"
+                <select
+                className="shadow-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 p-2 rounded"
                 value={timeframe}
                 onChange={(e) => {
                   setTimeframe(e.target.value);
