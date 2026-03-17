@@ -14,12 +14,27 @@ import expenseRoutes from "./routes/expenseRoutes";
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(express.text({ type: "text/plain" }));
+
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "https://main.d1dde88exbhzg1.amplifyapp.com", // Your Amplify frontend
+  ],
+  credentials: true,
+};
+
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        connectSrc: ["'self'", "http://localhost:3000"],
+        connectSrc: [
+          "'self'",
+          "http://localhost:3000",
+          "https://main.d1dde88exbhzg1.amplifyapp.com",
+        ],
       },
     },
   })
@@ -28,7 +43,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 /* ROUTES */
 app.get("/", (req, res) => {
