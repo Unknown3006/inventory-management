@@ -15,8 +15,8 @@ const Navbar = () => {
     (state) => state.global.isSidebarCollapsed
   );
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-  const isNotificationsEnabled = useAppSelector((state) => state.global.isNotificationsEnabled);
-  const notifications = useAppSelector((state) => state.global.notifications);
+  const isNotificationsEnabled = useAppSelector((state) => state.global.isNotificationsEnabled) ?? true;
+  const notifications = useAppSelector((state) => state.global.notifications) || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
