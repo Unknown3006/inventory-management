@@ -22,6 +22,7 @@ model Users {
 
 model Products {
   productId     String      @id
+  userId        String?     // Added for user data isolation
   name          String
   price         Float
   rating        Float?
@@ -33,6 +34,7 @@ model Products {
 model Sales {
   saleId      String   @id
   productId   String
+  userId      String?     // Added for user data isolation
   timestamp   DateTime
   quantity    Int
   unitPrice   Float
@@ -43,8 +45,10 @@ model Sales {
 model Purchases {
   purchaseId String   @id
   productId  String
+  userId     String?     // Added for user data isolation
   timestamp  DateTime
   quantity   Int
+  unitPrice  Float?      // To match DB fallback type if any
   unitCost   Float
   totalCost  Float
   product    Products @relation(fields: [productId], references: [productId])
@@ -52,6 +56,7 @@ model Purchases {
 
 model Expenses {
   expenseId String   @id
+  userId    String?     // Added for user data isolation
   category  String
   amount    Float
   timestamp DateTime
@@ -59,6 +64,7 @@ model Expenses {
 
 model SalesSummary {
   salesSummaryId   String   @id
+  userId           String?     // Added for user data isolation
   totalValue       Float
   changePercentage Float?
   date             DateTime
@@ -66,6 +72,7 @@ model SalesSummary {
 
 model PurchaseSummary {
   purchaseSummaryId String   @id
+  userId            String?     // Added for user data isolation
   totalPurchased    Float
   changePercentage  Float?
   date              DateTime
@@ -73,6 +80,7 @@ model PurchaseSummary {
 
 model ExpenseSummary {
   expenseSummaryId  String              @id
+  userId            String?             // Added for user data isolation
   totalExpenses     Float
   date              DateTime
   ExpenseByCategory ExpenseByCategory[]
@@ -81,6 +89,7 @@ model ExpenseSummary {
 model ExpenseByCategory {
   expenseByCategoryId String         @id
   expenseSummaryId    String
+  userId              String?             // Added for user data isolation
   category            String
   amount              BigInt
   date                DateTime

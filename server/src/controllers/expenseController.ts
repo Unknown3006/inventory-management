@@ -10,6 +10,7 @@ export const getExpensesByCategory = async (
   try {
     const expenseByCategorySummaryRaw = await prisma.expenseByCategory.findMany(
       {
+        where: { userId: (req as any).user?.userId },
         orderBy: {
           date: "desc",
         },

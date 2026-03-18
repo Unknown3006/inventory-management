@@ -32,12 +32,13 @@ export default function LoginPage() {
 
       const { token } = response.data;
 
-      // Store token securely in cookies (expires in 1 day)
-      Cookies.set("auth-token", token, { expires: 1, sameSite: "strict" });
+      // Store token securely as a session cookie (deleted on browser close)
+      Cookies.set("auth-token", token, { sameSite: "strict" });
       
       // Store user details for UI usage
-      if (response.data.user && response.data.user.name) {
-        localStorage.setItem("userName", response.data.user.name);
+      if (response.data.user) {
+        if (response.data.user.name) localStorage.setItem("userName", response.data.user.name);
+        if (response.data.user.email) localStorage.setItem("userEmail", response.data.user.email);
       }
 
       // Redirect to dashboard

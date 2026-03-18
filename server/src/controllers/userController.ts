@@ -11,3 +11,35 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Error retrieving users" });
   }
 };
+
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { name, email } = req.body;
+    const userId = (req as any).user?.userId;
+
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const updatedUser = await prisma.users.update({
+      where: { userId },
+      data: {
+        ...(name && { name }),
+        ...(email && { email }),
+      },
+    });
+
+    res.json({
+      message: "User updated successfully",
+      user: {
+        userId: updatedUser.userId,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Error updating user" });
+  }
+};

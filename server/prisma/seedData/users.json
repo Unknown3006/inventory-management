@@ -172,5 +172,11 @@
     "name": "Sara-ann",
     "email": "sblundels@csmonitor.com",
     "password": "$2b$10$1TaAOQfNLmHPYWCsSYLCZOc68SI6XzScHZZUzqiQAfHjixKN0C2n."
+  },
+  {
+    "userId": "d4b1a41a-96e0-47b8-a764-5a67c4e57b98",
+    "name": "Pushkar",
+    "email": "pushkar@gmail.com",
+    "password": "$2b$10$rUzcuscX.qcjP/dSK2EDxelEeuG4a06D6i6DymDT8WE/E1FVvvar6"
   }
 ]

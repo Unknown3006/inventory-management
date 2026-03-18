@@ -120,6 +120,14 @@ export const api = createApi({
       query: () => "/expenses",
       providesTags: ["Expenses"],
     }),
+    updateUser: build.mutation<any, { name?: string; email?: string }>({
+      query: (data) => ({
+        url: "/users/update",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
@@ -131,4 +139,5 @@ export const {
   useDeleteProductMutation,
   useGetUsersQuery,
   useGetExpensesByCategoryQuery,
+  useUpdateUserMutation,
 } = api;

@@ -31,7 +31,33 @@ const Users = () => {
         columns={columns}
         getRowId={(row) => row.userId}
         checkboxSelection
-        className="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 mt-5 !text-gray-700 dark:!text-gray-200"
+        className="bg-gray-800 shadow rounded-lg border border-gray-200 mt-5 !text-gray-200"
+        sx={{
+          border: "none",
+          color: "#e5e7eb",
+
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "#1f2937 !important",
+            color: "#e5e7eb",
+          },
+
+          "& .MuiDataGrid-columnHeadersInner": {
+            backgroundColor: "#1f2937 !important",
+          },
+
+          // ✅ THIS FIXES THE WHITE EMPTY AREA
+          "& .MuiDataGrid-filler": {
+            backgroundColor: "#1f2937 !important",
+          },
+
+          "& .MuiDataGrid-columnHeader": {
+            backgroundColor: "#1f2937 !important",
+          },
+
+          "& .MuiDataGrid-row": {
+            backgroundColor: "#1f2937",
+          },
+        }}
       />
     </div>
   );

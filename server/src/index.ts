@@ -12,7 +12,8 @@ import expenseRoutes from "./routes/expenseRoutes";
 import authRoutes from "./routes/authRoutes";
 import { verifyToken } from "./middleware/authMiddleware";
 
-/* CONFIGURATIONS */
+// Force reload trigger
+/* ROUTE CONFIGURATIONS */
 dotenv.config();
 const app = express();
 app.use(express.json());

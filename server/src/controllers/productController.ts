@@ -11,6 +11,7 @@ export const getProducts = async (
     const search = req.query.search?.toString();
     const products = await prisma.products.findMany({
       where: {
+        userId: (req as any).user?.userId, // Filter by User ID
         ...(search && {
           name: {
             contains: search,
@@ -81,6 +82,7 @@ export const createProduct = async (
     const product = await prisma.products.create({
       data: {
         productId,
+        userId: (req as any).user?.userId, // Set User ID
         name,
         price: parsedPrice,
         rating: parsedRating,

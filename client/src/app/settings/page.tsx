@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import Header from "@/app/(components)/Header";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsNotificationsEnabled } from "@/state";
+import { useUpdateUserMutation } from "@/state/api";
 
 type UserSetting = {
   label: string;
@@ -16,14 +17,18 @@ const Settings = () => {
   const dispatch = useAppDispatch();
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const isNotificationsEnabled = useAppSelector((state) => state.global.isNotificationsEnabled);
+  const [updateUser] = useUpdateUserMutation();
 
-  const userSettings: UserSetting[] = [
-    { label: "Username", value: "john_doe", type: "text" },
-    { label: "Email", value: "john.doe@example.com", type: "text" },
-    { label: "Notification", value: isNotificationsEnabled, type: "toggle", key: "notification" },
-    { label: "Dark Mode", value: isDarkMode, type: "toggle", key: "darkMode" },
-    { label: "Language", value: "English", type: "text" },
-  ];
+  const [username, setUsername] = useState("Loading...");
+  const [email, setEmail] = useState("Loading...");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUsername(localStorage.getItem("userName") || "User");
+      setEmail(localStorage.getItem("userEmail") || "user@example.com");
+    }
+  }, []);
 
   const handleToggleChange = (setting: UserSetting) => {
     if (setting.key === "darkMode") {
@@ -33,10 +38,42 @@ const Settings = () => {
     }
   };
 
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await updateUser({ name: username, email }).unwrap();
+      localStorage.setItem("userName", username);
+      localStorage.setItem("userEmail", email);
+      alert("Settings updated successfully!");
+    } catch (err) {
+      console.error("Failed to update settings:", err);
+      alert("Failed to update settings. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const userSettings: UserSetting[] = [
+    { label: "Username", value: username, type: "text" },
+    { label: "Email", value: email, type: "text" },
+    { label: "Notification", value: isNotificationsEnabled, type: "toggle", key: "notification" },
+    { label: "Dark Mode", value: isDarkMode, type: "toggle", key: "darkMode" },
+    { label: "Language", value: "English", type: "text" },
+  ];
+
   return (
     <div className="w-full">
-      <Header name="User Settings" />
-      <div className="overflow-x-auto mt-5 shadow-md rounded-lg">
+      <div className="flex justify-between items-center mb-5">
+        <Header name="User Settings" />
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-colors duration-150 disabled:opacity-50"
+        >
+          {isSaving ? "Saving..." : "Save Profile"}
+        </button>
+      </div>
+      <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg transition-colors">
           <thead className="bg-gray-800 dark:bg-gray-700 text-white">
             <tr>
@@ -72,8 +109,13 @@ const Settings = () => {
                   ) : (
                     <input
                       type="text"
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-300 bg-white dark:bg-gray-700 focus:outline-none focus:border-blue-500 transition-colors"
-                      defaultValue={setting.value as string}
+                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 focus:outline-none focus:border-blue-500 transition-colors w-64"
+                      value={setting.value as string}
+                      onChange={(e) => {
+                        if (setting.label === "Username") setUsername(e.target.value);
+                        else if (setting.label === "Email") setEmail(e.target.value);
+                      }}
+                      disabled={setting.label === "Language"} // Language remains static for now
                     />
                   )}
                 </td>

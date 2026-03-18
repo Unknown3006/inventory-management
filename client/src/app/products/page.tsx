@@ -211,76 +211,55 @@ const Products = () => {
             return (
               <div
                 key={product.productId}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700 flex flex-col"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition border border-gray-200 dark:border-gray-700 flex flex-col"
               >
-                {/* Product Image */}
-                <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden flex items-center justify-center">
-                  <img
-                    src={`https://via.placeholder.com/300x200?text=${encodeURIComponent(product.name)}`}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {isLowStock && (
-                    <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3" />
-                      Low Stock
-                    </div>
-                  )}
-                </div>
-
-                {/* Card Content */}
                 <div className="p-4 flex flex-col flex-1">
+
+                  {/* Low Stock Badge */}
+                  <div className="flex justify-end mb-2">
+                    {isLowStock && (
+                      <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        Low Stock
+                      </div>
+                    )}
+                  </div>
+
                   {/* Product Name */}
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
                     {product.name}
                   </h3>
 
                   {/* Rating */}
-                  <div className="mb-3">
-                    {renderStars(product.rating)}
-                  </div>
+                  <div className="mb-3">{renderStars(product.rating)}</div>
 
                   {/* Price */}
-                  <div className="mb-3">
-                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                      ${product.price.toFixed(2)}
-                    </p>
-                  </div>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">
+                    ${product.price.toFixed(2)}
+                  </p>
 
-                  {/* Stock Quantity */}
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Stock:</span>
-                    <span
-                      className={`text-sm font-semibold ${
-                        isLowStock ? "text-red-600" : "text-green-600"
-                      }`}
-                    >
-                      {product.stockQuantity} {product.stockQuantity === 1 ? "item" : "items"}
-                    </span>
-                  </div>
-
-                  {/* Product ID Badge */}
+                  {/* Stock */}
                   <div className="mb-4">
-                    <span className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 rounded">
-                      ID: {product.productId}
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Stock:
+                    </span>{" "}
+                    <span className={isLowStock ? "text-red-600 font-semibold" : "text-green-600"}>
+                      {product.stockQuantity} items
                     </span>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 mt-auto pt-2">
-                    <button
-                      onClick={() => handleEditProduct(product)}
-                      className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition text-sm font-medium"
-                    >
-                      <Edit className="w-4 h-4" />
-                      Edit
+                  {/* ID */}
+                  {/* <span className="mb-4 inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 rounded">
+                    ID: {product.productId}
+                  </span> */}
+
+                  {/* Buttons */}
+                  <div className="flex gap-2 mt-auto">
+                    <button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
+                      <Edit className="w-4 h-4" /> Edit
                     </button>
-                    <button
-                      onClick={() => setDeleteConfirm(product.productId)}
-                      className="flex-1 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition text-sm font-medium"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
+                    <button className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
+                      <Trash2 className="w-4 h-4" /> Delete
                     </button>
                   </div>
                 </div>
