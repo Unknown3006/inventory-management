@@ -164,6 +164,15 @@ export const deleteProduct = async (
       return;
     }
 
+    // Delete dependent records first to satisfy foreign key constraints
+    await prisma.sales.deleteMany({
+      where: { productId },
+    });
+
+    await prisma.purchases.deleteMany({
+      where: { productId },
+    });
+
     // Delete the product
     await prisma.products.delete({
       where: { productId },

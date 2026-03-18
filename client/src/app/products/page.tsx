@@ -255,10 +255,10 @@ const Products = () => {
 
                   {/* Buttons */}
                   <div className="flex gap-2 mt-auto">
-                    <button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
+                    <button onClick={() => handleEditProduct(product)} className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
                       <Edit className="w-4 h-4" /> Edit
                     </button>
-                    <button className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
+                    <button onClick={() => setDeleteConfirm(product.productId)} className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2">
                       <Trash2 className="w-4 h-4" /> Delete
                     </button>
                   </div>

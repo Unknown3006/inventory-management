@@ -5,10 +5,15 @@ const prisma = new PrismaClient();
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user?.userId;
-    const users = await prisma.users.findMany({
-      where: { userId: userId || "invalid-user-id" }
-    });
+    const email = (req as any).user?.email;
+
+    // Only Pushkar is allowed to view other users
+    if (email !== "pushkar@gmail.com") {
+      res.json([]);
+      return;
+    }
+
+    const users = await prisma.users.findMany();
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving users" });
