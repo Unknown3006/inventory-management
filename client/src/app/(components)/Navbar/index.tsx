@@ -2,11 +2,12 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsSidebarCollapsed, dismissNotification, clearAllNotifications } from "@/state";
-import { Bell, Menu, Moon, Settings, Sun, Search, X } from "lucide-react";
+import { Bell, Menu, Moon, Settings, Sun, Search, X, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,20 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
+  const [userName, setUserName] = useState("User");
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("auth-token");
+    localStorage.removeItem("userName");
+    router.push("/login"); // Log them out to the login screen
+  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -183,14 +198,17 @@ const Navbar = () => {
               alt="Profile"
               width={50}
               height={50}
-              className="rounded-full h-full object-cover"
+              className="rounded-full object-cover"
             />
-            <span className="font-semibold dark:text-gray-100">Ed Roh</span>
+            <span className="font-semibold dark:text-gray-100">{userName}</span>
           </div>
         </div>
         <Link href="/settings">
           <Settings className="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors" size={24} />
         </Link>
+        <button onClick={handleLogout} title="Logout" className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <LogOut className="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" size={24} />
+        </button>
       </div>
     </div>
   );
