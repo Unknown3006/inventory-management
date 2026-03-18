@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 import Cookies from "js-cookie";
 
+import { api } from "@/state/api";
+
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -33,6 +35,8 @@ const Navbar = () => {
   const handleLogout = () => {
     Cookies.remove("auth-token");
     localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    dispatch(api.util.resetApiState()); // Clear RTK Query cache on logout
     router.push("/login"); // Log them out to the login screen
   };
 

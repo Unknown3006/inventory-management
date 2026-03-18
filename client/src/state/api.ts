@@ -95,7 +95,7 @@ export const api = createApi({
         method: "POST",
         body: newProduct,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: ["Products", "DashboardMetrics"],
     }),
     updateProduct: build.mutation<Product, { productId: string; data: UpdateProduct }>({
       query: ({ productId, data }) => ({
@@ -103,14 +103,14 @@ export const api = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: ["Products", "DashboardMetrics"],
     }),
     deleteProduct: build.mutation<void, string>({
       query: (productId) => ({
         url: `/products/${productId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: ["Products", "DashboardMetrics"],
     }),
     getUsers: build.query<User[], void>({
       query: () => "/users",
