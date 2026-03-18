@@ -34,7 +34,7 @@ export default function LoginPage() {
 
       // Store token securely as a session cookie (deleted on browser close)
       Cookies.set("auth-token", token, { sameSite: "strict" });
-      
+
       // Store user details for UI usage
       if (response.data.user) {
         if (response.data.user.name) localStorage.setItem("userName", response.data.user.name);
@@ -70,7 +70,7 @@ export default function LoginPage() {
             <LogIn size={32} />
           </div>
         </div>
-        
+
         <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-2">
           Welcome Back
         </h1>
@@ -121,7 +121,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
             Register here
           </Link>
