@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Header from "@/app/(components)/Header";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsDarkMode, setIsNotificationsEnabled } from "@/state";
+import { setIsDarkMode, setIsNotificationsEnabled, setUserName } from "@/state";
 import { useUpdateUserMutation } from "@/state/api";
 
 type UserSetting = {
@@ -12,6 +12,11 @@ type UserSetting = {
   type: "text" | "toggle";
   key?: string;
 };
+
+type Toast = {
+  message: string;
+  type: "success" | "error";
+} | null;
 
 const Settings = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +27,19 @@ const Settings = () => {
   const [username, setUsername] = useState("Loading...");
   const [email, setEmail] = useState("Loading...");
   const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState<Toast>(null);
+
+  const showToast = useCallback((message: string, type: "success" | "error") => {
+    setToast({ message, type });
+  }, []);
+
+  // Auto-dismiss toast after 3 seconds
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -44,10 +62,11 @@ const Settings = () => {
       await updateUser({ name: username, email }).unwrap();
       localStorage.setItem("userName", username);
       localStorage.setItem("userEmail", email);
-      alert("Settings updated successfully!");
+      dispatch(setUserName(username));
+      showToast("Settings updated successfully!", "success");
     } catch (err) {
       console.error("Failed to update settings:", err);
-      alert("Failed to update settings. Please try again.");
+      showToast("Failed to update settings. Please try again.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -124,6 +143,42 @@ const Settings = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl text-white text-sm font-medium transition-all duration-300 animate-slide-in ${
+            toast.type === "success"
+              ? "bg-gradient-to-r from-green-500 to-emerald-600"
+              : "bg-gradient-to-r from-red-500 to-rose-600"
+          }`}
+          style={{ animation: "slideIn 0.35s ease-out" }}
+        >
+          <span className="text-lg">
+            {toast.type === "success" ? "✅" : "❌"}
+          </span>
+          <span>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="ml-3 text-white/80 hover:text-white text-lg leading-none transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };

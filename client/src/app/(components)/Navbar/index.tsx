@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsDarkMode, setIsSidebarCollapsed, dismissNotification, clearAllNotifications } from "@/state";
+import { setIsDarkMode, setIsSidebarCollapsed, setUserName, dismissNotification, clearAllNotifications } from "@/state";
 import { Bell, Menu, Moon, Settings, Sun, Search, X, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,17 +20,18 @@ const Navbar = () => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const isNotificationsEnabled = useAppSelector((state) => state.global.isNotificationsEnabled) ?? true;
   const notifications = useAppSelector((state) => state.global.notifications) || [];
+  const userName = useAppSelector((state) => state.global.userName);
   const [searchTerm, setSearchTerm] = useState("");
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
-  const [userName, setUserName] = useState("User");
 
+  // Hydrate userName from localStorage into Redux on client mount
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setUserName(storedName);
+    if (storedName && storedName !== userName) {
+      dispatch(setUserName(storedName));
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     Cookies.remove("auth-token");

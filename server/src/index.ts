@@ -26,6 +26,7 @@ const corsOptions = {
     "https://main.d1dde88exbhzg1.amplifyapp.com", // Your Amplify frontend
   ],
   credentials: true,
+  optionsSuccessStatus: 200, // Handle Preflight success status for API Gateway
 };
 
 app.use(

@@ -12,12 +12,14 @@ export interface InitialStateTypes {
   isDarkMode: boolean;
   isNotificationsEnabled: boolean;
   notifications: Notification[];
+  userName: string;
 }
 
 const initialState: InitialStateTypes = {
   isSidebarCollapsed: false,
   isDarkMode: false,
   isNotificationsEnabled: true,
+  userName: "User",
   notifications: [
     {
       id: "1",
@@ -53,6 +55,9 @@ export const globalSlice = createSlice({
     setIsNotificationsEnabled: (state, action: PayloadAction<boolean>) => {
       state.isNotificationsEnabled = action.payload;
     },
+    setUserName: (state, action: PayloadAction<string>) => {
+      state.userName = action.payload;
+    },
     dismissNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.filter(
         (n) => n.id !== action.payload
@@ -74,6 +79,7 @@ export const {
   setIsSidebarCollapsed,
   setIsDarkMode,
   setIsNotificationsEnabled,
+  setUserName,
   dismissNotification,
   markNotificationRead,
   clearAllNotifications,
