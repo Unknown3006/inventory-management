@@ -34,11 +34,19 @@ const Navbar = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
-    Cookies.remove("auth-token");
+    // Clear all cookies
+    const allCookies = Cookies.get();
+    Object.keys(allCookies).forEach((cookieName) => Cookies.remove(cookieName));
+
+    // Clear all localStorage
     localStorage.removeItem("userName");
     localStorage.removeItem("userEmail");
-    dispatch(api.util.resetApiState()); // Clear RTK Query cache on logout
-    router.push("/login"); // Log them out to the login screen
+
+    // Reset RTK Query cache
+    dispatch(api.util.resetApiState());
+
+    // Hard navigation to clear Next.js client-side state entirely
+    window.location.href = "/login";
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;

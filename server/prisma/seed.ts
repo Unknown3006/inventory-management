@@ -3,6 +3,21 @@ import fs from "fs";
 import path from "path";
 const prisma = new PrismaClient();
 
+// The userId for pushkar@gmail.com — all seed data will be assigned to this user
+const PUSHKAR_USER_ID = "d4b1a41a-96e0-47b8-a764-5a67c4e57b98";
+
+// Tables that have a userId field for data isolation
+const TABLES_WITH_USER_ID = [
+  "products",
+  "sales",
+  "salesSummary",
+  "purchases",
+  "purchaseSummary",
+  "expenses",
+  "expenseSummary",
+  "expenseByCategory",
+];
+
 async function deleteAllData(orderedFileNames: string[]) {
   const modelNames = orderedFileNames.map((fileName) => {
     return path.basename(fileName, path.extname(fileName));
@@ -64,13 +79,22 @@ async function main() {
     }
 
     for (const data of jsonData) {
+      // Inject userId for pushkar@gmail.com into all data tables (not users table)
+      const record = { ...data };
+      if (TABLES_WITH_USER_ID.includes(modelName) && modelName !== "users") {
+        record.userId = PUSHKAR_USER_ID;
+      }
+
       await model.create({
-        data,
+        data: record,
       });
     }
 
-    console.log(`Seeded ${modelName} with data from ${fileName}`);
+    console.log(`Seeded ${modelName} with data from ${fileName} ${TABLES_WITH_USER_ID.includes(modelName) ? `(userId: ${PUSHKAR_USER_ID})` : ""}`);
   }
+
+  console.log("\n✅ All seed data assigned to pushkar@gmail.com user only.");
+  console.log("   Other users will start with empty dashboards.");
 }
 
 main()

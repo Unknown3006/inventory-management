@@ -25,9 +25,17 @@ const corsOptions = {
     "http://localhost:3000",
     "https://main.d1dde88exbhzg1.amplifyapp.com", // Your Amplify frontend
   ],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200, // Handle Preflight success status for API Gateway
 };
+
+// CORS must be applied BEFORE helmet so headers are never stripped
+app.use(cors(corsOptions));
+
+// Explicit preflight handler for all routes (fixes API Gateway CORS issues)
+app.options("*", cors(corsOptions));
 
 app.use(
   helmet({
@@ -47,7 +55,6 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors(corsOptions));
 
 /* ROUTES */
 app.get("/", (req, res) => {
